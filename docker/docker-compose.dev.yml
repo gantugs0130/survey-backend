@@ -1,0 +1,27 @@
+version: "3.9"
+   
+services:
+  hps_db:
+    container_name: hps_db
+    image: postgres
+    volumes:
+      - psql_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  hps_web:
+    container_name: hps_python
+    build:
+      context: '../'
+      dockerfile: './docker/dev/dockerfile'
+    command: python manage.py runserver 0.0.0.0:8002
+    volumes:
+      - ../code:/code
+    ports:
+      - "8002:8002"
+    depends_on:
+      - hps_db
+volumes:
+  psql_data:
+      driver: local
